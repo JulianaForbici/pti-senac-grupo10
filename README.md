@@ -79,27 +79,222 @@ Muitas pessoas desejam ler mais, mas enfrentam:
 
 ---
 
-## Tecnologias
+# Book Exchange API
 
-- **C# / .NET**
-- **PostgreSQL**
-- **Blazor** 
+API REST desenvolvida em Spring Boot para gerenciamento de troca de livros entre usuários.
+
+O sistema permite:
+
+- cadastro de usuários
+- cadastro de livros
+- associação de livros a usuários
+- definição de disponibilidade para troca
+- busca de livros por título, autor ou gênero
 
 ---
 
-## Como rodar o projeto
+# Tecnologias utilizadas
 
-### Pré-requisitos
-- .NET SDK
-- Banco de dados 
+- Java 21
+- Spring Boot
+- Spring Data JPA
+- PostgreSQL
+- Maven
+- Swagger (documentação da API)
 
-### Executar
+---
+
+# Pré-requisitos
+
+Antes de executar o projeto, é necessário ter instalado:
+
+- Java JDK 21
+- Maven
+- PostgreSQL
+
+---
+
+# Configuração do Banco de Dados
+
+Criar um banco chamado:
+
+```
+book_exchange
+```
+
+Configurar o arquivo:
+
+```
+src/main/resources/application.properties
+```
+
+Exemplo:
+
+```properties
+spring.application.name=bookexchange
+
+spring.datasource.url=jdbc:postgresql://localhost:5432/book_exchange
+spring.datasource.username=postgres
+spring.datasource.password=SUA_SENHA
+
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
+
+spring.sql.init.mode=always
+```
+
+Caso deseje inserir dados de teste:
+
+```sql
+INSERT INTO generos (nome_genero) VALUES ('Suspense'), ('Fantasia');
+
+INSERT INTO usuarios (nome, email, cidade)
+VALUES ('Ricardo Menezes', 'ricardo@email.com', 'São Paulo');
+
+INSERT INTO livros (titulo, autor, id_genero)
+VALUES ('O Homem de Giz', 'C.J. Tudor', 1);
+```
+
+---
+
+# Executando o projeto
+
+No terminal, dentro da pasta do projeto:
+
 ```bash
-# restaurar dependências
-dotnet restore
+mvn spring-boot:run
+```
 
-# build
-dotnet build
+A API iniciará em:
 
-# rodar
-dotnet run --project ./src/NomeDoProjeto
+```
+http://localhost:8080
+```
+
+---
+
+# Documentação da API
+
+A documentação interativa pode ser acessada pelo Swagger:
+
+```
+http://localhost:8080/swagger-ui.html
+```
+
+Nela é possível testar todos os endpoints diretamente pelo navegador.
+
+---
+
+# Endpoints principais
+
+## Livros
+
+Listar todos os livros
+
+```
+GET /books
+```
+
+Buscar livros por título
+
+```
+GET /books?titulo=hobbit
+```
+
+Buscar livros por autor
+
+```
+GET /books?autor=tolkien
+```
+
+Buscar livros por gênero
+
+```
+GET /books?genre=2
+```
+
+Buscar combinando filtros
+
+```
+GET /books?titulo=hobbit&autor=tolkien
+```
+
+Criar livro
+
+```
+POST /books
+```
+
+Body de exemplo:
+
+```json
+{
+  "titulo": "O Hobbit",
+  "autor": "J.R.R. Tolkien",
+  "genero": {
+    "id": 2
+  }
+}
+```
+
+---
+
+## Usuários
+
+Listar usuários
+
+```
+GET /users
+```
+
+Criar usuário
+
+```
+POST /users
+```
+
+Body de exemplo:
+
+```json
+{
+  "nome": "Maria Silva",
+  "email": "maria@email.com",
+  "cidade": "São Paulo"
+}
+```
+
+---
+
+## Estante do usuário
+
+Listar estantes
+
+```
+GET /shelf
+```
+
+Criar registro na estante
+
+```
+POST /shelf
+```
+
+Exemplo:
+
+```json
+{
+  "usuario": { "id": 1 },
+  "livro": { "id": 1 },
+  "disponibilidade": "para_troca",
+  "estadoConservacao": "Ótimo estado"
+}
+```
+
+---
+
+# Observações
+
+- O sistema ainda não possui autenticação de login
+- O cadastro de usuários atualmente não exige senha
+- O frontend da aplicação será desenvolvido separadamente (Angular)
