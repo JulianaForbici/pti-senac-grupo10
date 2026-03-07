@@ -1,5 +1,6 @@
 package com.example.bookexchange.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,5 +30,8 @@ public class UserShelf {
     private Book livro;
 
     private String disponibilidade; // colecao | para_troca
+
+    @Column(name = "estado_conservacao")
+    @JsonProperty("estadoConservacao")
     private String estadoConservacao;
 }

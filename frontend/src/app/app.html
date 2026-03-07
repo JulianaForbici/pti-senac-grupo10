@@ -12,10 +12,13 @@
       <a routerLink="/my-shelf" routerLinkActive="active">
         Minha estante
       </a>
+      <a *ngIf="currentUser()" routerLink="/my-interests" routerLinkActive="active">
+        Meus interesses
+      </a>
       <a routerLink="/books" routerLinkActive="active">
         Livros
       </a>
-      <a routerLink="/onboarding" routerLinkActive="active">
+      <a *ngIf="!isLoggedIn()" routerLink="/onboarding" routerLinkActive="active">
         Entrar
       </a>
     </nav>

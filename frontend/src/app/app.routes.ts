@@ -1,10 +1,14 @@
 import { Routes } from '@angular/router';
 
-import { HomePageComponent } from './features/home/home.page';
-import { OnboardingPageComponent } from './features/onboarding/onboarding.page';
-import { MyShelfPageComponent } from './features/my-shelf/my-shelf.page';
-import { BookSearchPageComponent } from './features/book-search/book-search.page';
 import { AdminPageComponent } from './features/admin/admin.page';
+import { BookSearchPageComponent } from './features/book-search/book-search.page';
+import { HomePageComponent } from './features/home/home.page';
+import { MyInterestsPage } from './features/my-interests/my-interests.page';
+import { MyShelfPageComponent } from './features/my-shelf/my-shelf.page';
+import { OnboardingPageComponent } from './features/onboarding/onboarding.page';
+import { UserProfilePageComponent } from './features/user-profile/user-profile.page';
+import { authGuard } from './guards/auth.guard';
+import { publicGuard } from './guards/public.guard';
 
 export const routes: Routes = [
   {
@@ -13,19 +17,31 @@ export const routes: Routes = [
   },
   {
     path: 'onboarding',
-    component: OnboardingPageComponent
+    component: OnboardingPageComponent,
+    canActivate: [publicGuard]
   },
   {
     path: 'my-shelf',
-    component: MyShelfPageComponent
+    component: MyShelfPageComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'my-interests',
+    component: MyInterestsPage,
+    canActivate: [authGuard]
   },
   {
     path: 'books',
     component: BookSearchPageComponent
   },
   {
+    path: 'profile/:userId',
+    component: UserProfilePageComponent
+  },
+  {
     path: 'admin',
-    component: AdminPageComponent
+    component: AdminPageComponent,
+    canActivate: [authGuard]
   },
   {
     path: '**',

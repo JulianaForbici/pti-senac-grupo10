@@ -12,16 +12,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.bookexchange.model.User;
+import com.example.bookexchange.model.UserShelf;
 import com.example.bookexchange.service.UserService;
+import com.example.bookexchange.service.UserShelfService;
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
 
     private final UserService service;
+    private final UserShelfService userShelfService;
 
-    public UserController(UserService service) {
+    public UserController(UserService service, UserShelfService userShelfService) {
         this.service = service;
+        this.userShelfService = userShelfService;
     }
 
     @GetMapping
@@ -32,6 +36,11 @@ public class UserController {
     @GetMapping("/{id}")
     public User getById(@PathVariable Long id) {
         return service.findById(id);
+    }
+
+    @GetMapping("/{id}/shelf")
+    public List<UserShelf> getUserShelf(@PathVariable Long id) {
+        return userShelfService.findByUserId(id);
     }
 
     @PostMapping
