@@ -186,6 +186,72 @@ Nela é possível testar todos os endpoints diretamente pelo navegador.
 
 ---
 
+# Execução com Docker (dev)
+
+Para rodar o **backend** e o **PostgreSQL** em contêineres, é necessário ter **Docker** e **Docker Compose** instalados.
+
+## Subindo os serviços (backend + banco)
+
+Na raiz do repositório, execute:
+
+```bash
+docker compose up --build
+```
+
+Isso irá:
+
+- criar um contêiner `db` com PostgreSQL (banco `book_exchange`, usuário `postgres`, senha `postgres`);
+- criar e subir o backend em `http://localhost:8080` com o **profile `dev`** habilitado (veja seção de dados de exemplo abaixo).
+
+## Variáveis de ambiente importantes
+
+- Backend (definidas em `docker-compose.yml`):
+  - `SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/book_exchange`
+  - `SPRING_DATASOURCE_USERNAME=postgres`
+  - `SPRING_DATASOURCE_PASSWORD=postgres`
+  - `SPRING_PROFILES_ACTIVE=dev`
+
+Caso queira customizar credenciais ou outras configurações, você pode alterar diretamente o arquivo `docker-compose.yml`.
+
+## Acesso aos serviços
+
+- **Backend (API + Swagger)**: `http://localhost:8080` (Swagger em `/swagger-ui.html`)
+
+Para parar os serviços:
+
+```bash
+docker compose down
+```
+
+Se quiser remover também os dados persistidos do PostgreSQL (volume `db_data`), use:
+
+```bash
+docker compose down -v
+```
+
+### Build mais rápido com Docker BuildKit
+
+Para acelerar o build das imagens durante o desenvolvimento, você pode habilitar o **Docker BuildKit** antes de subir os serviços:
+
+```bash
+export DOCKER_BUILDKIT=1
+docker-compose up --build
+```
+
+
+## Executando o frontend (sem Docker)
+
+Para rodar o frontend em modo desenvolvimento, na pasta `frontend`:
+
+```bash
+pnpm install
+pnpm start
+```
+
+O frontend ficará disponível em `http://localhost:4200`, consumindo o backend em `http://localhost:8080`.
+
+---
+
 # Endpoints principais
 
 ## Livros
@@ -237,6 +303,52 @@ Body de exemplo:
   }
 }
 ```
+
+---
+
+## Dados de exemplo (seed em desenvolvimento)
+
+Quando o backend é executado com o profile `dev` (por exemplo via `docker compose up` ou localmente com
+
+```bash
+SPRING_PROFILES_ACTIVE=dev mvn spring-boot:run
+```
+
+), uma rotina de seed (`SampleDataConfig`) popula automaticamente o banco com alguns dados de exemplo:
+
+- **Gêneros**
+  - Fantasia
+  - Ficção Científica
+  - Suspense
+  - Romance
+- **Usuários**
+  - Matheus Silva – `matheus@example.com` – São Paulo
+  - Juliana Cristina – `juliana@example.com` – Rio de Janeiro
+  - Ricardo Menezes – `ricardo@example.com` – São Paulo
+- **Livros**
+  - O Hobbit (J.R.R. Tolkien) – Fantasia
+  - Duna (Frank Herbert) – Ficção Científica
+  - O Homem de Giz (C.J. Tudor) – Suspense
+  - Orgulho e Preconceito (Jane Austen) – Romance
+- **Estantes (`/shelf`)**
+  - Matheus: O Hobbit (colecao), Duna (para_troca)
+  - Juliana: Orgulho e Preconceito (colecao), O Hobbit (para_troca)
+  - Ricardo: O Homem de Giz (para_troca), Duna (colecao)
+
+Isso facilita testar o backend (e o frontend Angular) imediatamente após subir os serviços, sem precisar cadastrar tudo manualmente.
+
+## Usuários de teste
+
+Use os seguintes e-mails para testar rapidamente o frontend e a API. Todos compartilham a mesma **senha de demonstração**:
+
+- Senha padrão: `123456`
+
+- Matheus Silva – `matheus@example.com` – São Paulo
+- Juliana Cristina – `juliana@example.com` – Rio de Janeiro
+- Ricardo Menezes – `ricardo@example.com` – São Paulo
+- Ana Paula – `ana@example.com` – Curitiba
+- Bruno Rocha – `bruno@example.com` – Porto Alegre
+- Carla Souza – `carla@example.com` – Belo Horizonte
 
 ---
 
@@ -295,6 +407,16 @@ Exemplo:
 
 # Observações
 
-- O sistema ainda não possui autenticação de login
-- O cadastro de usuários atualmente não exige senha
-- O frontend da aplicação será desenvolvido separadamente (Angular)
+- O sistema agora possui autenticação básica de login por **e-mail + senha** usando hash (BCrypt).
+- O cadastro/login principal é feito pelo endpoint híbrido:
+  - `POST /auth/register-or-login` – cria o usuário se o e-mail ainda não existir; se já existir, valida a senha e retorna o usuário.
+- Também existe um endpoint de login puro:
+  - `POST /auth/login`
+  - Body de exemplo:
+    ```json
+    {
+      "email": "matheus@example.com",
+      "senha": "123456"
+    }
+    ```
+- O frontend (Angular) utiliza esses endpoints para gerenciar sessão do usuário.

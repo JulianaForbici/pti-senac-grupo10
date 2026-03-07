@@ -1,0 +1,118 @@
+<section class="page">
+  <header class="page-header">
+    <h1>Buscar livros</h1>
+    <p>Pesquise por título, autor ou gênero.</p>
+  </header>
+
+  <section class="card">
+    <form class="form" (ngSubmit)="search()">
+      <div class="row">
+        <label class="field">
+          <span>Título</span>
+          <input
+            type="text"
+            [(ngModel)]="titulo"
+            name="titulo"
+          />
+        </label>
+
+        <label class="field">
+          <span>Autor</span>
+          <input
+            type="text"
+            [(ngModel)]="autor"
+            name="autor"
+          />
+        </label>
+
+        <label class="field">
+          <span>Gênero</span>
+          <select
+            [(ngModel)]="genreId"
+            name="genreId"
+          >
+            <option [ngValue]="null">Qualquer</option>
+            <option
+              *ngFor="let genre of genres()"
+              [ngValue]="genre.id"
+            >
+              {{ genre.nomeGenero }}
+            </option>
+          </select>
+        </label>
+      </div>
+
+      <button
+        type="submit"
+        class="button-primary"
+      >
+        {{ isLoading() ? 'Buscando...' : 'Buscar' }}
+      </button>
+    </form>
+  </section>
+
+  <p class="error" *ngIf="errorMessage() as error">
+    {{ error }}
+  </p>
+
+  <p class="success" *ngIf="successMessage() as success">
+    {{ success }}
+  </p>
+
+  <section class="card" *ngIf="results().length">
+    <h2>Resultados</h2>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Título</th>
+          <th>Autor</th>
+          <th>Gênero</th>
+          <th>Disponível com</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let book of results()">
+          <td>{{ book.titulo }}</td>
+          <td>{{ book.autor }}</td>
+          <td>{{ book.genero || '—' }}</td>
+          <td>{{ book.owners.length }}</td>
+          <td>
+            <button
+              type="button"
+              class="button-link"
+              (click)="addToShelf(book)"
+            >
+              Adicionar à minha estante
+            </button>
+          </td>
+        </tr>
+        <tr *ngFor="let book of results()">
+          <td colspan="5">
+            <div *ngIf="book.owners.length">
+              <p>Disponível com:</p>
+              <ul>
+                <li *ngFor="let owner of book.owners">
+                  {{ owner.ownerName }} ({{ owner.cidade }}) - {{ owner.estadoConservacao }}
+                  <button
+                    type="button"
+                    class="button-link"
+                    (click)="expressInterest(book, owner)"
+                  >
+                    Tenho interesse
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <p *ngIf="!isLoading() && !results().length">
+    Nenhum resultado ainda. Preencha os filtros e clique em buscar.
+  </p>
+</section>
+

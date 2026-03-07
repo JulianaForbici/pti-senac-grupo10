@@ -1,0 +1,151 @@
+<section class="page">
+  <header class="page-header">
+    <h1>Minha estante</h1>
+    <p>Veja e gerencie os livros associados ao seu usuário.</p>
+  </header>
+
+  <p *ngIf="isLoading()">Carregando sua estante...</p>
+
+  <p class="error" *ngIf="errorMessage() as error">
+    {{ error }}
+  </p>
+
+  <section class="card add-card">
+    <h2>Adicionar livro à estante</h2>
+
+    <form class="form" (ngSubmit)="addToShelf()">
+      <div class="row">
+        <label class="field">
+          <span>Título</span>
+          <input
+            type="text"
+            [(ngModel)]="addTitulo"
+            name="titulo"
+            required
+          />
+        </label>
+
+        <label class="field">
+          <span>Autor</span>
+          <input
+            type="text"
+            [(ngModel)]="addAutor"
+            name="autor"
+            required
+          />
+        </label>
+      </div>
+
+      <div class="row">
+        <label class="field">
+          <span>Gênero</span>
+          <select
+            [(ngModel)]="addGenreId"
+            name="genero"
+            required
+          >
+            <option [ngValue]="null" disabled>Selecione</option>
+            <option
+              *ngFor="let genre of genres()"
+              [ngValue]="genre.id"
+            >
+              {{ genre.nomeGenero }}
+            </option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span>Disponibilidade</span>
+          <select
+            [(ngModel)]="addDisponibilidade"
+            name="disponibilidade"
+          >
+            <option value="colecao">Coleção</option>
+            <option value="para_troca">Disponível para troca</option>
+          </select>
+        </label>
+      </div>
+
+      <label class="field">
+        <span>Estado de conservação</span>
+        <input
+          type="text"
+          [(ngModel)]="addEstadoConservacao"
+          name="estadoConservacao"
+          required
+        />
+      </label>
+
+      <button
+        type="submit"
+        class="button-primary"
+        [disabled]="isSaving()"
+      >
+        {{ isSaving() ? 'Salvando...' : 'Adicionar' }}
+      </button>
+    </form>
+  </section>
+
+  <section class="card list-card" *ngIf="entries().length">
+    <h2>Livros na sua estante</h2>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Título</th>
+          <th>Autor</th>
+          <th>Gênero</th>
+          <th>Disponibilidade</th>
+          <th>Estado de conservação</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let entry of entries()">
+          <td>{{ entry.livro.titulo }}</td>
+          <td>{{ entry.livro.autor }}</td>
+          <td>{{ entry.livro.genero?.nomeGenero || '—' }}</td>
+          <td class="badges">
+            <button
+              type="button"
+              class="badge"
+              [class.active]="entry.disponibilidade === 'colecao'"
+              (click)="setDisponibilidade(entry, 'colecao')"
+            >
+              Coleção
+            </button>
+            <button
+              type="button"
+              class="badge"
+              [class.active]="entry.disponibilidade === 'para_troca'"
+              (click)="setDisponibilidade(entry, 'para_troca')"
+            >
+              Para troca
+            </button>
+          </td>
+          <td>
+            <input
+              type="text"
+              [(ngModel)]="entry.estadoConservacao"
+              (blur)="saveEstadoConservacao(entry)"
+            />
+          </td>
+          <td>
+            <button
+              type="button"
+              class="button-link danger"
+              (click)="removeEntry(entry)"
+            >
+              Remover
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <p *ngIf="!isLoading() && !entries().length">
+    Nenhum livro na sua estante ainda. Use o formulário acima para adicionar.
+  </p>
+</section>
+
