@@ -19,6 +19,6 @@ export class App {
 
   logout(): void {
     this.currentUserService.clearCurrentUser();
-    this.router.navigate(['/']).catch(() => {});
+    this.router.navigate(['/books']).catch(() => {});
   }
 }

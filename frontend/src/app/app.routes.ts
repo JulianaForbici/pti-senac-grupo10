@@ -2,7 +2,6 @@ import { Routes } from '@angular/router';
 
 import { AdminPageComponent } from './features/admin/admin.page';
 import { BookSearchPageComponent } from './features/book-search/book-search.page';
-import { HomePageComponent } from './features/home/home.page';
 import { MyInterestsPage } from './features/my-interests/my-interests.page';
 import { MyShelfPageComponent } from './features/my-shelf/my-shelf.page';
 import { OnboardingPageComponent } from './features/onboarding/onboarding.page';
@@ -13,7 +12,8 @@ import { publicGuard } from './guards/public.guard';
 export const routes: Routes = [
   {
     path: '',
-    component: HomePageComponent
+    redirectTo: 'books',
+    pathMatch: 'full'
   },
   {
     path: 'onboarding',
@@ -45,7 +45,7 @@ export const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: ''
+    redirectTo: 'books'
   }
 ];
 

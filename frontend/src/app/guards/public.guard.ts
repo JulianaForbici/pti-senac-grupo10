@@ -15,6 +15,6 @@ export const publicGuard: CanActivateFn = () => {
     return true;
   }
 
-  router.navigate(['/']).catch(() => {});
+  router.navigate(['/books']).catch(() => {});
   return false;
 };

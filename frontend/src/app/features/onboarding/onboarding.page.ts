@@ -1,11 +1,13 @@
-import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
+import type { User } from '../../models';
 import { AuthService } from '../../services/auth.service';
 import { CurrentUserService } from '../../state/current-user.service';
-import type { User } from '../../models';
+
+const RETURN_URL_KEY = 'bookexchange_return_url';
 
 @Component({
   standalone: true,
@@ -59,7 +61,9 @@ export class OnboardingPageComponent {
       .subscribe({
         next: (user: User) => {
           this.currentUserService.setCurrentUser(user);
-          this.router.navigate(['/my-shelf']).catch(() => {});
+          const returnUrl = sessionStorage.getItem(RETURN_URL_KEY) || '/books';
+          sessionStorage.removeItem(RETURN_URL_KEY);
+          this.router.navigateByUrl(returnUrl).catch(() => {});
           this.isSubmitting.set(false);
         },
         error: (err) => {
