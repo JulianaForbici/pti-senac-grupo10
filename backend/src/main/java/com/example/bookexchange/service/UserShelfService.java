@@ -39,7 +39,8 @@ public class UserShelfService {
             return existente.get();
         }
 
-        return repository.save(shelf);
+        UserShelf saved = repository.save(shelf);
+        return repository.findById(saved.getId()).orElse(saved);
     }
 
     public void delete(Long id) {

@@ -25,12 +25,6 @@ public class UserService {
     }
 
     public User save(User user) {
-        var existing = repository.findByEmail(user.getEmail());
-
-        if (existing.isPresent()) {
-            return existing.get(); // evita duplicação
-        }
-
         return repository.save(user);
     }
 

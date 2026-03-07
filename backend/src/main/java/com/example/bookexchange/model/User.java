@@ -1,5 +1,6 @@
 package com.example.bookexchange.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -24,4 +25,8 @@ public class User {
     private String email;
 
     private String cidade;
+
+    @JsonIgnore
+    @Column(name = "senha_hash")
+    private String passwordHash;
 }
