@@ -120,8 +120,6 @@ pti-senac-grupo10/
 
 ## Como executar
 
-### Opção 1 — Docker (recomendado)
-
 Pré-requisito: **Docker** e **Docker Compose** instalados.
 
 ```bash
@@ -144,54 +142,6 @@ Para parar **e apagar os dados** (volume do PostgreSQL):
 ```bash
 docker compose down -v
 ```
-
----
-
-### Opção 2 — Execução local (sem Docker)
-
-#### Backend
-
-Pré-requisito: Java 21, Maven e PostgreSQL rodando localmente.
-
-1. Crie o banco:
-```sql
-CREATE DATABASE book_exchange;
-```
-
-2. Configure `backend/src/main/resources/application.properties`:
-```properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/book_exchange
-spring.datasource.username=postgres
-spring.datasource.password=SUA_SENHA
-
-spring.jpa.hibernate.ddl-auto=update
-spring.jpa.show-sql=true
-spring.jpa.open-in-view=false
-
-spring.sql.init.mode=always
-```
-
-3. Execute:
-```bash
-cd backend
-./mvnw spring-boot:run
-```
-
-A API ficará disponível em `http://localhost:8080`.
-
-#### Frontend
-
-Pré-requisito: Node.js e pnpm.
-
-```bash
-cd frontend
-pnpm install
-pnpm start
-```
-
-O app ficará disponível em `http://localhost:4200`.
-
-> O frontend aponta por padrão para `http://localhost:8080`. Isso está configurado em `src/app/api.config.ts`.
 
 ---
 
