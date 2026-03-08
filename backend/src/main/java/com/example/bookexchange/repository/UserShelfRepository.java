@@ -12,4 +12,6 @@ public interface UserShelfRepository extends JpaRepository<UserShelf, Long> {
     Optional<UserShelf> findByUsuarioIdAndLivroId(Long usuarioId, Long livroId);
 
     List<UserShelf> findByDisponibilidade(String disponibilidade);
+
+    List<UserShelf> findByUsuarioId(Long usuarioId);
 }

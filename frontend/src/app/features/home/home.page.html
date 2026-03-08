@@ -7,7 +7,7 @@
   </header>
 
   <div class="page-grid">
-    <article class="card primary">
+    <article class="card primary" *ngIf="!isLoggedIn">
       <h2>Começar agora</h2>
       <p>Crie ou selecione seu usuário para começar a montar sua estante.</p>
       <a routerLink="/onboarding" class="button-primary">Entrar</a>

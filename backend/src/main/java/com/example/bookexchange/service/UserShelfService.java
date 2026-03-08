@@ -3,6 +3,7 @@ package com.example.bookexchange.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.bookexchange.model.UserShelf;
 import com.example.bookexchange.repository.UserShelfRepository;
@@ -20,10 +21,16 @@ public class UserShelfService {
         return repository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public UserShelf findById(Long id) {
         return repository.findById(id).orElse(null);
     }
 
+    public List<UserShelf> findByUserId(Long userId) {
+        return repository.findByUsuarioId(userId);
+    }
+
+    @Transactional
     public UserShelf save(UserShelf shelf) {
 
         var usuario = shelf.getUsuario();
@@ -33,6 +40,13 @@ public class UserShelfService {
             throw new RuntimeException("Usuário e livro devem ser informados com seus IDs.");
         }
 
+        // If updating an existing shelf entry
+        if (shelf.getId() != null) {
+            UserShelf saved = repository.save(shelf);
+            return repository.findById(saved.getId()).orElse(saved);
+        }
+
+        // If creating a new entry, check for duplicates
         var existente = repository.findByUsuarioIdAndLivroId(usuario.getId(), livro.getId());
 
         if (existente.isPresent()) {

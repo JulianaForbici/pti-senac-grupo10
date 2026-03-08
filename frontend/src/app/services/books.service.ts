@@ -1,5 +1,5 @@
-import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { API_BASE_URL } from '../api.config';
@@ -75,6 +75,38 @@ export class BooksService {
     }
 
     return this.http.get<AvailableBook[]>(`${this.baseUrl}/books/available`, { params });
+  }
+
+  listAvailableBooksWithPagination(
+    filters: BookFilters = {},
+    excludeUserId?: number,
+    page: number = 0,
+    size: number = 10,
+    sort: string = 'titulo'
+  ): Observable<any> {
+    let params = new HttpParams();
+
+    if (filters.titulo) {
+      params = params.set('titulo', filters.titulo);
+    }
+
+    if (filters.autor) {
+      params = params.set('autor', filters.autor);
+    }
+
+    if (filters.genre != null) {
+      params = params.set('genre', String(filters.genre));
+    }
+
+    if (excludeUserId != null) {
+      params = params.set('excludeUserId', String(excludeUserId));
+    }
+
+    params = params.set('page', String(page));
+    params = params.set('size', String(size));
+    params = params.set('sort', sort);
+
+    return this.http.get<any>(`${this.baseUrl}/books/available`, { params });
   }
 
   getBook(id: number): Observable<Book> {

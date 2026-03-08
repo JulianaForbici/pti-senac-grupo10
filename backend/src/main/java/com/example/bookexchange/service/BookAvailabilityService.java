@@ -1,6 +1,7 @@
 package com.example.bookexchange.service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.bookexchange.dto.AvailableBookDto;
 import com.example.bookexchange.dto.AvailableBookOwnerDto;
+import com.example.bookexchange.dto.PagedResponseDto;
 import com.example.bookexchange.model.Book;
 import com.example.bookexchange.model.UserShelf;
 import com.example.bookexchange.repository.UserShelfRepository;
@@ -24,6 +26,11 @@ public class BookAvailabilityService {
     }
 
     public List<AvailableBookDto> findAvailableBooks(String titulo, String autor, Long genreId, Long excludeUserId) {
+        return findAvailableBooks(titulo, autor, genreId, excludeUserId, 0, 10, "titulo").getContent();
+    }
+
+    public PagedResponseDto<AvailableBookDto> findAvailableBooks(String titulo, String autor, Long genreId,
+            Long excludeUserId, int page, int size, String sort) {
         List<UserShelf> shelves = userShelfRepository.findByDisponibilidade("para_troca");
 
         String tituloFilter = titulo != null ? titulo.toLowerCase(Locale.ROOT) : null;
@@ -77,7 +84,52 @@ public class BookAvailabilityService {
             dto.getOwners().add(ownerDto);
         }
 
-        return new ArrayList<>(byBookId.values());
+        // Apply sorting
+        List<AvailableBookDto> sortedList = new ArrayList<>(byBookId.values());
+        applySorting(sortedList, sort);
+
+        // Apply pagination
+        long totalElements = sortedList.size();
+        int totalPages = (int) Math.ceil((double) totalElements / size);
+        int skip = page * size;
+
+        List<AvailableBookDto> paginatedContent = sortedList.stream()
+            .skip(skip)
+            .limit(size)
+            .toList();
+
+        return new PagedResponseDto<>(
+            paginatedContent,
+            page,
+            size,
+            totalElements,
+            totalPages,
+            page >= totalPages - 1
+        );
+    }
+
+    private void applySorting(List<AvailableBookDto> list, String sort) {
+        if (sort == null || sort.isEmpty()) {
+            sort = "titulo";
+        }
+
+        switch (sort.toLowerCase()) {
+            case "titulo":
+                list.sort(Comparator.comparing(b -> b.getTitulo() != null ? b.getTitulo() : ""));
+                break;
+            case "autor":
+                list.sort(Comparator.comparing(b -> b.getAutor() != null ? b.getAutor() : ""));
+                break;
+            case "genero":
+                list.sort(Comparator.comparing(b -> b.getGenero() != null ? b.getGenero() : ""));
+                break;
+            case "relevancia":
+                // Ordenar por número de proprietários (mais disponível = mais relevante)
+                list.sort((a, b) -> Integer.compare(b.getOwners().size(), a.getOwners().size()));
+                break;
+            default:
+                list.sort(Comparator.comparing(b -> b.getTitulo() != null ? b.getTitulo() : ""));
+        }
     }
 }
 

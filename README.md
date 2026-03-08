@@ -26,21 +26,21 @@ Muitas pessoas desejam ler mais, mas enfrentam:
 ## Personas
 
 ### Persona I — Matheus Silva (19 anos)
-**Perfil:** universitário/estagiário, orçamento apertado, fã de fantasia e ficção científica.  
-**Objetivos:** ler mais sem gastar muito; encontrar pessoas com gostos parecidos.  
-**Dores:** livros caros; frustração com lançamentos; falta de espaço confiável para troca.  
+**Perfil:** universitário/estagiário, orçamento apertado, fã de fantasia e ficção científica.
+**Objetivos:** ler mais sem gastar muito; encontrar pessoas com gostos parecidos.
+**Dores:** livros caros; frustração com lançamentos; falta de espaço confiável para troca.
 **Como o app ajuda:** troca livros já lidos por novos; filtros por gênero/sagas; recomendações e notificações.
 
 ### Persona II — Juliana Cristina
-**Perfil:** leitora de livros físicos e e-books, rotina corrida, grande apego à estante.  
-**Objetivos:** organizar a coleção; trocar poucos livros específicos; gerir o que tem e o que leu.  
-**Dores:** pouco tempo; plataformas desorganizadas; dificuldade em separar “coleção” vs “troca”.  
-**Como o app ajuda:** biblioteca digital organizada, marcação “para troca”/“coleção”, cadastro rápido e filtros.
+**Perfil:** leitora de livros físicos e e-books, rotina corrida, grande apego à estante.
+**Objetivos:** organizar a coleção; trocar poucos livros específicos; gerir o que tem e o que leu.
+**Dores:** pouco tempo; plataformas desorganizadas; dificuldade em separar "coleção" vs "troca".
+**Como o app ajuda:** biblioteca digital organizada, marcação "para troca"/"coleção", cadastro rápido e filtros.
 
 ### Persona III — Ricardo Menezes (32 anos)
-**Perfil:** profissional de TI, pouco espaço em casa, fã de suspense/terror/thrillers.  
-**Objetivos:** liberar espaço; trocar com segurança; encontrar leitores próximos com gostos parecidos.  
-**Dores:** trocas confusas em redes sociais; pouca confiança; dificuldade de encontrar matches.  
+**Perfil:** profissional de TI, pouco espaço em casa, fã de suspense/terror/thrillers.
+**Objetivos:** liberar espaço; trocar com segurança; encontrar leitores próximos com gostos parecidos.
+**Dores:** trocas confusas em redes sociais; pouca confiança; dificuldade de encontrar matches.
 **Como o app ajuda:** catálogo claro, filtros por gênero/localização, mensagens internas e confirmações.
 
 ---
@@ -48,13 +48,13 @@ Muitas pessoas desejam ler mais, mas enfrentam:
 ## Jornada do Usuário (Resumo)
 
 ### Matheus — Limitação financeira
-- **Gatilho:** indicação de amigo (“organizado e confiável”)
+- **Gatilho:** indicação de amigo ("organizado e confiável")
 - **Momento de valor:** encontra troca por um livro de uma saga desejada
 - **Resultado:** passa a usar o app como principal forma de conseguir livros
 
 ### Juliana — Organização e controle
 - **Gatilho:** conteúdo sobre organização pessoal
-- **Momento de valor:** consegue separar “coleção” de “para troca” e ter controle da estante
+- **Momento de valor:** consegue separar "coleção" de "para troca" e ter controle da estante
 - **Resultado:** organiza a biblioteca e troca apenas títulos selecionados
 
 ### Ricardo — Espaço e segurança
@@ -64,359 +64,207 @@ Muitas pessoas desejam ler mais, mas enfrentam:
 
 ---
 
-## Funcionalidades (planejadas)
+## Funcionalidades implementadas
 
-- Cadastro/login de usuários
-- Biblioteca pessoal (catalogação)
-- Marcação de livros:
-  - **Coleção**
-  - **Disponível para troca**
-- Busca e filtros (gênero, autor, título, localização)
-- Match/negociação de troca
-- Chat/mensagens internas
-- Confirmação de troca e histórico
-- Avaliações (opcional)
+- Cadastro e login de usuários (e-mail + senha BCrypt)
+- Biblioteca pessoal (minha estante) — catalogar livros como **coleção** ou **disponível para troca**
+- Busca de livros com filtros reativos por título, autor e gênero
+- Registro e remoção de interesse em livros de outros usuários
+- Página "Meus Interesses" com todos os interesses registrados
+- Página Admin para gerenciamento de livros e gêneros
+- Guards de rota (autenticação e onboarding obrigatório)
 
 ---
 
-# Book Exchange API
+## Tecnologias
 
-API REST desenvolvida em Spring Boot para gerenciamento de troca de livros entre usuários.
-
-O sistema permite:
-
-- cadastro de usuários
-- cadastro de livros
-- associação de livros a usuários
-- definição de disponibilidade para troca
-- busca de livros por título, autor ou gênero
-
----
-
-# Tecnologias utilizadas
-
-- Java 21
-- Spring Boot
-- Spring Data JPA
-- PostgreSQL
-- Maven
-- Swagger (documentação da API)
+| Camada | Tecnologia |
+|--------|-----------|
+| Frontend | Angular 19 (standalone components, signals) |
+| Backend | Java 21 + Spring Boot 4 |
+| Banco de dados | PostgreSQL 16 |
+| ORM | Spring Data JPA / Hibernate 7 |
+| Autenticação | BCrypt (spring-security-crypto) |
+| Containerização | Docker + Docker Compose |
+| Gerenciador de pacotes (front) | pnpm |
+| Build (back) | Maven |
 
 ---
 
-# Pré-requisitos
-
-Antes de executar o projeto, é necessário ter instalado:
-
-- Java JDK 21
-- Maven
-- PostgreSQL
-
----
-
-# Configuração do Banco de Dados
-
-Criar um banco chamado:
+## Estrutura do repositório
 
 ```
-book_exchange
-```
-
-Configurar o arquivo:
-
-```
-src/main/resources/application.properties
-```
-
-Exemplo:
-
-```properties
-spring.application.name=bookexchange
-
-spring.datasource.url=jdbc:postgresql://localhost:5432/book_exchange
-spring.datasource.username=postgres
-spring.datasource.password=SUA_SENHA
-
-spring.jpa.hibernate.ddl-auto=update
-spring.jpa.show-sql=true
-spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
-
-spring.sql.init.mode=always
-```
-
-Caso deseje inserir dados de teste:
-
-```sql
-INSERT INTO generos (nome_genero) VALUES ('Suspense'), ('Fantasia');
-
-INSERT INTO usuarios (nome, email, cidade)
-VALUES ('Ricardo Menezes', 'ricardo@email.com', 'São Paulo');
-
-INSERT INTO livros (titulo, autor, id_genero)
-VALUES ('O Homem de Giz', 'C.J. Tudor', 1);
+pti-senac-grupo10/
+├── backend/          # API REST Spring Boot
+│   ├── src/main/java/com/example/bookexchange/
+│   │   ├── config/   # CorsConfig, SecurityConfig
+│   │   ├── controller/
+│   │   ├── dto/
+│   │   ├── model/
+│   │   ├── repository/
+│   │   └── service/
+│   └── src/main/resources/
+│       ├── application.properties
+│       ├── schema.sql   # DDL das tabelas
+│       └── data.sql     # seed data (idempotente)
+├── frontend/         # Angular SPA
+│   └── src/app/
+│       ├── features/ # páginas (home, my-shelf, book-search, my-interests, ...)
+│       ├── services/ # AuthService, BooksService, ShelfService, InterestsService
+│       ├── guards/   # auth, public, app-init
+│       └── state/    # CurrentUserService
+└── docker-compose.yml
 ```
 
 ---
 
-# Executando o projeto
+## Como executar
 
-No terminal, dentro da pasta do projeto:
+Pré-requisito: **Docker** e **Docker Compose** instalados.
 
 ```bash
-mvn spring-boot:run
-```
-
-A API iniciará em:
-
-```
-http://localhost:8080
-```
-
----
-
-# Documentação da API
-
-A documentação interativa pode ser acessada pelo Swagger:
-
-```
-http://localhost:8080/swagger-ui.html
-```
-
-Nela é possível testar todos os endpoints diretamente pelo navegador.
-
----
-
-# Execução com Docker (dev)
-
-Para rodar o **backend** e o **PostgreSQL** em contêineres, é necessário ter **Docker** e **Docker Compose** instalados.
-
-## Subindo os serviços (backend + banco)
-
-Na raiz do repositório, execute:
-
-```bash
+# Na raiz do repositório
 docker compose up --build
 ```
 
-Isso irá:
+Isso sobe:
+- `bookexchange-db` — PostgreSQL na porta `5432`
+- `bookexchange-backend` — API REST na porta `http://localhost:8080`
 
-- criar um contêiner `db` com PostgreSQL (banco `book_exchange`, usuário `postgres`, senha `postgres`);
-- criar e subir o backend em `http://localhost:8080` com o **profile `dev`** habilitado (veja seção de dados de exemplo abaixo).
+O banco é criado automaticamente, as tabelas são geradas pelo `schema.sql` e o seed data é aplicado pelo `data.sql` (idempotente — só insere se ainda não existir).
 
-## Variáveis de ambiente importantes
-
-- Backend (definidas em `docker-compose.yml`):
-  - `SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/book_exchange`
-  - `SPRING_DATASOURCE_USERNAME=postgres`
-  - `SPRING_DATASOURCE_PASSWORD=postgres`
-  - `SPRING_PROFILES_ACTIVE=dev`
-
-Caso queira customizar credenciais ou outras configurações, você pode alterar diretamente o arquivo `docker-compose.yml`.
-
-## Acesso aos serviços
-
-- **Backend (API + Swagger)**: `http://localhost:8080` (Swagger em `/swagger-ui.html`)
-
-Para parar os serviços:
-
+Para parar:
 ```bash
 docker compose down
 ```
 
-Se quiser remover também os dados persistidos do PostgreSQL (volume `db_data`), use:
-
+Para parar **e apagar os dados** (volume do PostgreSQL):
 ```bash
 docker compose down -v
 ```
 
-### Build mais rápido com Docker BuildKit
+---
 
-Para acelerar o build das imagens durante o desenvolvimento, você pode habilitar o **Docker BuildKit** antes de subir os serviços:
+## Seed data
 
-```bash
-export DOCKER_BUILDKIT=1
-docker-compose up --build
-```
+O arquivo `backend/src/main/resources/data.sql` é executado automaticamente na inicialização e popula o banco com dados de exemplo (usando `ON CONFLICT DO NOTHING`, portanto é seguro reiniciar):
 
+| Tabela | Quantidade |
+|--------|-----------|
+| Gêneros | 20 |
+| Livros | 81 |
+| Usuários | 12 |
+| Entradas de estante | 60 |
 
-## Executando o frontend (sem Docker)
+### Usuários de teste
 
-Para rodar o frontend em modo desenvolvimento, na pasta `frontend`:
+Todos os usuários têm a mesma senha: **`senha123`**
 
-```bash
-pnpm install
-pnpm start
-```
-
-O frontend ficará disponível em `http://localhost:4200`, consumindo o backend em `http://localhost:8080`.
+| Nome | E-mail | Cidade |
+|------|--------|--------|
+| Ana Souza | ana.souza@email.com | São Paulo |
+| Bruno Lima | bruno.lima@email.com | Rio de Janeiro |
+| Carla Mendes | carla.mendes@email.com | Belo Horizonte |
+| Diego Ferreira | diego.ferreira@email.com | Porto Alegre |
+| Elena Costa | elena.costa@email.com | Curitiba |
+| Felipe Santos | felipe.santos@email.com | Salvador |
+| Gabriela Oliveira | gabriela.oliveira@email.com | Recife |
+| Henrique Rocha | henrique.rocha@email.com | Fortaleza |
+| Isabela Nunes | isabela.nunes@email.com | Manaus |
+| João Paulo Martins | joao.martins@email.com | Brasília |
+| Katia Vieira | katia.vieira@email.com | Florianópolis |
+| Lucas Martins | lucas.martins@email.com | Campinas |
 
 ---
 
-# Endpoints principais
+## Endpoints principais
 
-## Livros
+### Autenticação
 
-Listar todos os livros
-
-```
-GET /books
-```
-
-Buscar livros por título
-
-```
-GET /books?titulo=hobbit
-```
-
-Buscar livros por autor
-
-```
-GET /books?autor=tolkien
-```
-
-Buscar livros por gênero
-
-```
-GET /books?genre=2
-```
-
-Buscar combinando filtros
-
-```
-GET /books?titulo=hobbit&autor=tolkien
-```
-
-Criar livro
-
-```
-POST /books
-```
+| Método | Endpoint | Descrição |
+|--------|----------|-----------|
+| POST | `/auth/register-or-login` | Cria usuário (se não existir) ou faz login |
+| POST | `/auth/login` | Login com e-mail e senha |
 
 Body de exemplo:
-
 ```json
-{
-  "titulo": "O Hobbit",
-  "autor": "J.R.R. Tolkien",
-  "genero": {
-    "id": 2
-  }
-}
+{ "email": "ana.souza@email.com", "senha": "senha123" }
 ```
 
 ---
 
-## Dados de exemplo (seed em desenvolvimento)
+### Livros
 
-Quando o backend é executado com o profile `dev` (por exemplo via `docker compose up` ou localmente com
+| Método | Endpoint | Descrição |
+|--------|----------|-----------|
+| GET | `/books` | Lista todos os livros (paginado) |
+| GET | `/books?titulo=duna` | Filtro por título |
+| GET | `/books?autor=asimov` | Filtro por autor |
+| GET | `/books?genre=2` | Filtro por gênero |
+| POST | `/books` | Cria um livro (admin) |
+| DELETE | `/books/{id}` | Remove um livro (admin) |
 
-```bash
-SPRING_PROFILES_ACTIVE=dev mvn spring-boot:run
-```
-
-), uma rotina de seed (`SampleDataConfig`) popula automaticamente o banco com alguns dados de exemplo:
-
-- **Gêneros**
-  - Fantasia
-  - Ficção Científica
-  - Suspense
-  - Romance
-- **Usuários**
-  - Matheus Silva – `matheus@example.com` – São Paulo
-  - Juliana Cristina – `juliana@example.com` – Rio de Janeiro
-  - Ricardo Menezes – `ricardo@example.com` – São Paulo
-- **Livros**
-  - O Hobbit (J.R.R. Tolkien) – Fantasia
-  - Duna (Frank Herbert) – Ficção Científica
-  - O Homem de Giz (C.J. Tudor) – Suspense
-  - Orgulho e Preconceito (Jane Austen) – Romance
-- **Estantes (`/shelf`)**
-  - Matheus: O Hobbit (colecao), Duna (para_troca)
-  - Juliana: Orgulho e Preconceito (colecao), O Hobbit (para_troca)
-  - Ricardo: O Homem de Giz (para_troca), Duna (colecao)
-
-Isso facilita testar o backend (e o frontend Angular) imediatamente após subir os serviços, sem precisar cadastrar tudo manualmente.
-
-## Usuários de teste
-
-Use os seguintes e-mails para testar rapidamente o frontend e a API. Todos compartilham a mesma **senha de demonstração**:
-
-- Senha padrão: `123456`
-
-- Matheus Silva – `matheus@example.com` – São Paulo
-- Juliana Cristina – `juliana@example.com` – Rio de Janeiro
-- Ricardo Menezes – `ricardo@example.com` – São Paulo
-- Ana Paula – `ana@example.com` – Curitiba
-- Bruno Rocha – `bruno@example.com` – Porto Alegre
-- Carla Souza – `carla@example.com` – Belo Horizonte
+Parâmetros de paginação: `page`, `size`, `sortBy`, `sortDir`.
 
 ---
 
-## Usuários
+### Gêneros
 
-Listar usuários
-
-```
-GET /users
-```
-
-Criar usuário
-
-```
-POST /users
-```
-
-Body de exemplo:
-
-```json
-{
-  "nome": "Maria Silva",
-  "email": "maria@email.com",
-  "cidade": "São Paulo"
-}
-```
+| Método | Endpoint | Descrição |
+|--------|----------|-----------|
+| GET | `/genres` | Lista todos os gêneros |
+| POST | `/genres` | Cria gênero (admin) |
+| DELETE | `/genres/{id}` | Remove gênero (admin) |
 
 ---
 
-## Estante do usuário
+### Estante do usuário
 
-Listar estantes
+| Método | Endpoint | Descrição |
+|--------|----------|-----------|
+| GET | `/shelf/user/{userId}` | Lista estante do usuário |
+| POST | `/shelf` | Adiciona livro à estante |
+| PATCH | `/shelf/{id}` | Atualiza disponibilidade/conservação |
+| DELETE | `/shelf/{id}` | Remove entrada da estante |
 
-```
-GET /shelf
-```
-
-Criar registro na estante
-
-```
-POST /shelf
-```
-
-Exemplo:
-
+Body de exemplo (POST):
 ```json
 {
   "usuario": { "id": 1 },
-  "livro": { "id": 1 },
+  "livro": { "id": 6 },
   "disponibilidade": "para_troca",
-  "estadoConservacao": "Ótimo estado"
+  "estadoConservacao": "Ótimo"
 }
 ```
 
 ---
 
-# Observações
+### Interesses
 
-- O sistema agora possui autenticação básica de login por **e-mail + senha** usando hash (BCrypt).
-- O cadastro/login principal é feito pelo endpoint híbrido:
-  - `POST /auth/register-or-login` – cria o usuário se o e-mail ainda não existir; se já existir, valida a senha e retorna o usuário.
-- Também existe um endpoint de login puro:
-  - `POST /auth/login`
-  - Body de exemplo:
-    ```json
-    {
-      "email": "matheus@example.com",
-      "senha": "123456"
-    }
-    ```
-- O frontend (Angular) utiliza esses endpoints para gerenciar sessão do usuário.
+| Método | Endpoint | Descrição |
+|--------|----------|-----------|
+| GET | `/interests/user/{userId}` | Lista interesses do usuário |
+| POST | `/interests` | Registra interesse em um livro |
+| DELETE | `/interests/{id}` | Remove interesse |
+
+Body de exemplo (POST):
+```json
+{
+  "idSolicitante": 1,
+  "idDono": 2,
+  "idLivro": 6,
+  "idEstante": 7
+}
+```
+
+---
+
+### Usuários
+
+| Método | Endpoint | Descrição |
+|--------|----------|-----------|
+| GET | `/users` | Lista usuários |
+| GET | `/users/{id}` | Busca usuário por ID |
+| POST | `/users` | Cria usuário |
+| PATCH | `/users/{id}` | Atualiza dados do usuário |
+

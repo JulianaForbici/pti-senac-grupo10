@@ -1,9 +1,9 @@
-import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { API_BASE_URL } from '../api.config';
-import { User } from '../models';
+import { User, UserShelf } from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +18,10 @@ export class UsersService {
 
   getUser(id: number): Observable<User> {
     return this.http.get<User>(`${this.baseUrl}/users/${id}`);
+  }
+
+  getUserShelf(userId: number): Observable<UserShelf[]> {
+    return this.http.get<UserShelf[]>(`${this.baseUrl}/users/${userId}/shelf`);
   }
 
   createUser(payload: { nome: string; email: string; cidade: string }): Observable<User> {

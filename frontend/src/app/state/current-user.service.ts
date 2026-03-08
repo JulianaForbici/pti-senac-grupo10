@@ -1,4 +1,4 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
 
 import type { User } from '../models';
@@ -11,6 +11,9 @@ const STORAGE_KEY = 'bookexchange_current_user';
 export class CurrentUserService {
   private readonly router = inject(Router);
   private readonly userSignal = signal<User | null>(this.loadFromStorage());
+  private readonly initializedSignal = signal(true);
+
+  readonly isLoggedIn = computed(() => this.userSignal() !== null);
 
   private loadFromStorage(): User | null {
     if (typeof window === 'undefined') {
@@ -49,10 +52,6 @@ export class CurrentUserService {
     return this.userSignal();
   }
 
-  isLoggedIn(): boolean {
-    return this.userSignal() !== null;
-  }
-
   setCurrentUser(user: User): void {
     this.userSignal.set(user);
     this.saveToStorage(user);
@@ -70,6 +69,10 @@ export class CurrentUserService {
     }
 
     return user;
+  }
+
+  isInitialized(): boolean {
+    return this.initializedSignal();
   }
 }
 
